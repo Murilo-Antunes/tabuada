@@ -4,10 +4,10 @@ import java.util.Scanner;
 
 public class Tabuada {
 
-    int multiplicando;
-    int multiplicadorInicial;
-    int multiplicadorFinal;
-    String[] tabuada;
+    public int multiplicando;
+    public int multiplicadorInicial;
+    public int multiplicadorFinal;
+    public String[] tabuada;
 
     public void receberDados(){
         Scanner scanner = new Scanner(System.in);
@@ -27,7 +27,7 @@ public class Tabuada {
         calcularTabuada();
     }
 
-    public void calcularTabuada(){
+    public String[] calcularTabuada(){
         int apoio = 0;
 
         if (multiplicadorFinal < multiplicadorInicial) {
@@ -48,7 +48,7 @@ public class Tabuada {
             multiplicadorInicial = multiplicadorInicial + 1;
         }
 
-        exibirTabuada();
+        return tabuada;
     }
 
     public void exibirTabuada() {

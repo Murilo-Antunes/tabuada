@@ -5,22 +5,26 @@ import javafx.application.Application;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.Scene;
-import javafx.scene.control.Button;
-import javafx.scene.control.Label;
-import javafx.scene.control.ListView;
-import javafx.scene.control.TextField;
+import javafx.scene.control.*;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
 
+import java.util.Optional;
+
 public class TelaTabuada extends Application {
+
+    TextField tfMultiplicando;
+    TextField tfMultiplicador1;
+    TextField tfMultiplicador2;
 
     @Override
     public void start(Stage stage) throws Exception {
         stage.setWidth(400);
         stage.setHeight(550);
         stage.setTitle("Tabuada");
+        stage.setResizable(false);
 
         //criando root
         VBox root = new VBox();
@@ -53,10 +57,10 @@ public class TelaTabuada extends Application {
         Label lbMultiplicador2 = new Label("Maior multiplicador: ");
         lbMultiplicador2.setStyle("-fx-text-fill: white;  -fx-font-size: 15");
 
-        TextField tfMultiplicando = new TextField();
+        tfMultiplicando = new TextField();
         tfMultiplicando.setPrefSize(200, 20);
-        TextField tfMultiplicador1 = new TextField();
-        TextField tfMultiplicador2 = new TextField();
+        tfMultiplicador1 = new TextField();
+        tfMultiplicador2 = new TextField();
 
         GridPane grid = new GridPane();
 
@@ -100,16 +104,7 @@ public class TelaTabuada extends Application {
         ListView listaTabuada = new ListView();
         listaTabuada.setStyle("-fx-background-color: #595959; ");
 
-        String[] cidades = new String[5];
-        cidades[0] = "Itapevi";
-        cidades[1] = "Rio";
-        cidades[2] = "Rio2";
-        cidades[3] = "Rio3";
-        cidades[4] = "Rio4";
-        listaTabuada.getItems().addAll(cidades);
-        listaTabuada.getItems().add("SP");
-        listaTabuada.getItems().add("Julio");
-        listaTabuada.getItems().add("Madeira");
+        listaTabuada.getItems().addAll();
 
 
         VBox painelSaida = new VBox();
@@ -127,5 +122,62 @@ public class TelaTabuada extends Application {
 
 
         stage.show();
+
+        btLimpar.setOnAction(e -> {
+            tfMultiplicador1.setText("");
+            tfMultiplicador2.setText("");
+            tfMultiplicando.setText("");
+            listaTabuada.getItems().clear();
+
+            tfMultiplicando.requestFocus();
+        });
+
+        btSair.setOnAction(e -> {
+            Alert alerta = new Alert(Alert.AlertType.CONFIRMATION, "sair do programa?",  ButtonType.YES, ButtonType.NO);
+
+            Optional <ButtonType> resposta = alerta.showAndWait();;
+            if (resposta.get()  == ButtonType.YES) {
+                System.exit(0);
+            }
+        });
+
+        btCalcular.setOnAction(e -> {
+            if (validarEntrada()){
+                Tabuada tabuada = new Tabuada();
+
+                int multiplicando = Integer.parseInt(tfMultiplicando.getText());
+                int multiplicador1 = Integer.parseInt(tfMultiplicador1.getText());
+                int multiplicador2 = Integer.parseInt(tfMultiplicador2.getText());
+
+                tabuada.multiplicando = multiplicando;
+                tabuada.multiplicadorInicial = multiplicador1;
+                tabuada.multiplicadorFinal = multiplicador2;
+
+                String[] resultado = tabuada.calcularTabuada();
+
+                listaTabuada.getItems().addAll(resultado);
+            }
+        });
+    }
+
+
+    public boolean validarEntrada(){
+        if (tfMultiplicando.getText().isEmpty()) {
+            mostrarAlerta(Alert.AlertType.ERROR, "Digite um valor válido no multiplicando");
+            tfMultiplicando.requestFocus();
+            return false;
+        }else if (tfMultiplicador1.getText().isEmpty()) {
+            mostrarAlerta(Alert.AlertType.ERROR, "Digite um valor válido no primeiro multiplicador");
+            return false;
+        }else if (tfMultiplicador2.getText().isEmpty()) {
+            mostrarAlerta(Alert.AlertType.ERROR, "Digite um valor válido no segundo multiplicador");
+            return false;
+        }
+            return true;
+    }
+
+    public void mostrarAlerta(Alert.AlertType tipo, String mensagem){
+        Alert alerta = new Alert(tipo, mensagem);
+        alerta.showAndWait();
     }
 }
