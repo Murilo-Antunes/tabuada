@@ -11,6 +11,12 @@ import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
 
+import java.io.File;
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.StandardOpenOption;
+import java.time.LocalDateTime;
 import java.util.Optional;
 
 public class TelaTabuada extends Application {
@@ -124,9 +130,9 @@ public class TelaTabuada extends Application {
         stage.show();
 
         btLimpar.setOnAction(e -> {
-            tfMultiplicador1.setText("");
-            tfMultiplicador2.setText("");
-            tfMultiplicando.setText("");
+            tfMultiplicador1.clear();
+            tfMultiplicador2.clear();
+            tfMultiplicando.clear();
             listaTabuada.getItems().clear();
 
             tfMultiplicando.requestFocus();
@@ -156,6 +162,17 @@ public class TelaTabuada extends Application {
                 String[] resultado = tabuada.calcularTabuada();
 
                 listaTabuada.getItems().addAll(resultado);
+
+                //gravar dados da tabuada em arquivo csv
+                Path arquivo = Path.of("C:\\Users\\25203706\\ds1t\\tabuada\\dados_tabuada.csv");
+
+                String dados = tfMultiplicando.getText() + ";" + tfMultiplicador1.getText() + ";" + tfMultiplicador2.getText() + ";" + LocalDateTime.now() + "\n";
+
+                try {
+                    Files.writeString(arquivo,dados, StandardOpenOption.APPEND); //acrescentar
+                } catch (IOException erro){
+                    System.out.printf(erro.getMessage());
+                }
             }
         });
     }
